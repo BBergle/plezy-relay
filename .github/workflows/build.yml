@@ -1,0 +1,101 @@
+name: Build relay image
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Upstream edde746/plezy git ref to build (tag or commit sha)
+        required: true
+        type: string
+      tags:
+        description: Newline-separated list of full image refs to push
+        required: true
+        type: string
+    outputs:
+      digest:
+        description: Digest of the pushed manifest list
+        value: ${{ jobs.build.outputs.digest }}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
+    steps:
+      - name: Check out this repo (build tooling)
+        uses: actions/checkout@v4
+        with:
+          path: tooling
+
+      - name: Check out upstream plezy at ${{ inputs.ref }}
+        uses: actions/checkout@v4
+        with:
+          repository: edde746/plezy
+          ref: ${{ inputs.ref }}
+          fetch-depth: 1
+          persist-credentials: false
+          path: upstream
+
+      # The upstream Dockerfile's build stage has no --platform=$BUILDPLATFORM,
+      # so the foreign-arch stage runs emulated. QEMU is required for linux/arm64.
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      # Build the runner-native arch first and smoke test it. A broken upstream
+      # ref must never reach the registry as :latest.
+      - name: Build amd64 for smoke test
+        uses: docker/build-push-action@v6
+        with:
+          context: ./upstream/server
+          platforms: linux/amd64
+          load: true
+          push: false
+          tags: plezy-relay:smoketest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test
+        run: |
+          set -euo pipefail
+          docker run -d --name smoketest -p 18080:8080 -v "${RUNNER_TEMP}/relaydata:/data" plezy-relay:smoketest
+          ok=""
+          for _ in $(seq 1 30); do
+            if [ "$(curl -fsS http://localhost:18080/health || true)" = "ok" ]; then ok=1; break; fi
+            sleep 1
+          done
+          if [ -z "$ok" ]; then
+            echo "::error::relay never became healthy"; docker logs smoketest; exit 1
+          fi
+          # Prove the relay protocol works, not merely that the process is listening.
+          python3 tooling/scripts/ws_probe.py 18080
+          docker rm -f smoketest
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push multi-arch
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./upstream/server
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ inputs.tags }}
+          provenance: true
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          labels: |
+            org.opencontainers.image.title=plezy-relay
+            org.opencontainers.image.description=Plezy Watch Together relay server (unofficial build of edde746/plezy server/)
+            org.opencontainers.image.source=https://github.com/edde746/plezy
+            org.opencontainers.image.revision=${{ inputs.ref }}
+            org.opencontainers.image.licenses=GPL-3.0
