@@ -38,30 +38,25 @@ curl http://YOUR-SERVER-IP:8080/health   # -> ok
 ## Unraid
 
 The template is [`unraid/plezy-relay.xml`](unraid/plezy-relay.xml). It is not in
-Community Applications yet, so install it one of these two ways.
+Community Applications yet, so install it by copying it onto the flash drive.
 
-**Add Container → Template URL.** Docker tab → *Add Container*, and paste into the
-Template field:
-
-```
-https://raw.githubusercontent.com/BBergle/plezy-relay/main/unraid/plezy-relay.xml
-```
-
-**Or drop the file on the flash drive** (more reliable, survives a browser that
-refuses to fetch the URL):
+On the Unraid box — *Terminal* in the web UI, or SSH — run:
 
 ```bash
 curl -L -o /boot/config/plugins/dockerMan/templates-user/my-plezy-relay.xml \
   https://raw.githubusercontent.com/BBergle/plezy-relay/main/unraid/plezy-relay.xml
 ```
 
-Then Docker → *Add Container* → pick **plezy-relay** from the Template dropdown.
+Then Docker → *Add Container* → open the **Template** dropdown and pick
+**plezy-relay** (it appears under the user templates section) → *Apply*.
 
-> Unraid removed the old "Template Repositories" settings field in 6.10. If a guide
-> tells you to paste a repo URL there, it is out of date.
+> There is nowhere in current Unraid to paste a template URL. The Add Container
+> "Template" control is a dropdown that lists templates already on the flash
+> drive, and the old Docker Settings → "Template Repositories" field was removed
+> in 6.10. Guides that tell you to paste a URL predate that change.
 
-The template's **Repository** dropdown lets you pick `latest` or pin a specific
-Plezy version.
+Once installed, the template's **Repository** dropdown lets you pick `latest` or
+pin a specific Plezy version.
 
 ## Tags
 
