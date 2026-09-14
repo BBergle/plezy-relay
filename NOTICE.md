@@ -10,11 +10,6 @@ It contains no Plezy source code. The GitHub Actions workflows check out
 unmodified `server/Dockerfile` found there. The published image is the output of
 upstream's own build recipe, with nothing added, patched, or removed.
 
-Report problems with the *container or template* to this repository's issue
-tracker. Report problems with the *relay itself* upstream — but please confirm
-first that the same behaviour occurs when building `server/` by hand, so upstream
-does not receive bug reports caused by this packaging.
-
 ## Licensing
 
 Plezy is licensed under the **GNU General Public License v3.0**. The relay binary

@@ -14,8 +14,7 @@
     has a current build to pull. Images are tagged to match the Plezy release they
     came from, so a relay can be pinned to the client version in use.
 
-    Unofficial: not affiliated with or endorsed by the Plezy project. Container
-    and template issues go to this repository's issue tracker.
+    Unofficial: not affiliated with or endorsed by the Plezy project.
   </Profile>
   <Icon>https://raw.githubusercontent.com/BBergle/plezy-relay/main/templates/plezy-relay-icon.png</Icon>
   <WebPage>https://github.com/BBergle/plezy-relay</WebPage>
