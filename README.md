@@ -137,6 +137,13 @@ out of date.
 To publish a release by hand, run the **Watch for Plezy releases** workflow with a
 `release` input (and `force_rebuild` if you need to redo one).
 
+The template is also mirrored to
+[BBergle/unraid-templates](https://github.com/BBergle/unraid-templates/tree/main/plezy-relay).
+That copy only refreshes automatically if a `TEMPLATES_REPO_TOKEN` repository
+secret exists with write access to that repo — a cross-repo push cannot use the
+workflow's built-in token. Without it the mirror step skips, and the copy can be
+refreshed at any time with `GH_TOKEN=... scripts/mirror-template.sh`.
+
 ## Repository layout
 
 ```
