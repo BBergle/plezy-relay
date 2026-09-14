@@ -58,18 +58,6 @@ Then Docker → *Add Container* → open the **Template** dropdown and pick
 Once installed, the template's **Repository** dropdown lets you pick `latest` or
 pin a specific Plezy version.
 
-## Community Applications
-
-Not listed yet. The repository is already shaped for submission: public, GPL-3.0,
-one template per app under `templates/`, a populated `ca_profile.xml`, and a
-`TemplateURL` that matches where CA will re-fetch the file from. CI enforces all
-of that on every push, so it cannot drift out of compliance silently.
-
-To submit: sign in at [ca.unraid.net/submit/new](https://ca.unraid.net/submit/new)
-with your Unraid account, add this repository's GitHub URL, run **Validate** and
-**Scan**, then confirm. CA re-fetches templates from `TemplateURL` on its own
-schedule afterwards, so published updates propagate without resubmitting.
-
 ## Tags
 
 | Tag | Meaning |
