@@ -2,7 +2,13 @@ name: Watch for Plezy releases
 
 on:
   schedule:
-    - cron: '17 6 * * *'
+    # Hourly release check. There is no event for "upstream published a release"
+    # - GitHub cannot subscribe to another repo - so polling is the only option.
+    # A run that finds nothing costs ~11s, which is why the interval is this
+    # short. Minute 23 rather than 0: schedules bunched on the hour get delayed.
+    - cron: '23 * * * *'
+    # Weekly, for the keepalive below only.
+    - cron: '41 5 * * 1'
   workflow_dispatch:
     inputs:
       release:
@@ -47,7 +53,8 @@ jobs:
   # activity. This repo only commits when it publishes, so a long upstream
   # hiatus would quietly switch the daily check off and nobody would notice.
   keepalive:
-    if: github.event_name == 'schedule'
+    # Only on the weekly cron - checking a commit date 24 times a day is waste.
+    if: github.event.schedule == '41 5 * * 1'
     runs-on: ubuntu-latest
     permissions:
       contents: write
