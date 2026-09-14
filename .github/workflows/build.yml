@@ -15,6 +15,20 @@ on:
       digest:
         description: Digest of the pushed manifest list
         value: ${{ jobs.build.outputs.digest }}
+  # Lets this workflow be exercised on its own. With `tags` left blank it builds
+  # both architectures and runs the smoke test but pushes nothing, so the
+  # pipeline can be verified without touching the registry.
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Upstream ref to build
+        required: true
+        type: string
+        default: '2.19.1'
+      tags:
+        description: 'Image refs to push, newline separated. LEAVE BLANK to build and test without pushing.'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -75,19 +89,20 @@ jobs:
           docker rm -f smoketest
 
       - name: Log in to GHCR
+        if: inputs.tags != ''
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push multi-arch
+      - name: Build multi-arch${{ inputs.tags != '' && ' and push' || ' (no push - test only)' }}
         id: push
         uses: docker/build-push-action@v6
         with:
           context: ./upstream/server
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: ${{ inputs.tags != '' }}
           tags: ${{ inputs.tags }}
           provenance: true
           sbom: true
