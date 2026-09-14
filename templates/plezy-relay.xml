@@ -15,7 +15,7 @@
   <!-- BRANCHES:END -->
   <Network>bridge</Network>
   <Privileged>false</Privileged>
-  <Support/>
+  <Support>https://github.com/edde746/plezy/issues</Support>
   <Project>https://github.com/edde746/plezy</Project>
   <Overview>Self-hosted relay server for Plezy's "Watch Together" feature.&#13;&#10;&#13;&#10;Plezy is a cross-platform Plex &amp; Jellyfin client. Watch Together syncs playback between viewers through a small relay server, and this container runs your own instead of using the public one.&#13;&#10;&#13;&#10;This container has NO web interface. After starting it, open Plezy on each device and set Settings - Watch Together Relay to:&#13;&#10;    http://YOUR-UNRAID-IP:9977&#13;&#10;&#13;&#10;The URL must be http:// or https://. To watch together, everyone must be using the same relay.&#13;&#10;&#13;&#10;To reach the relay from outside your LAN, put a reverse proxy with TLS in front of it (it has no TLS of its own), give clients the proxy's https:// address, and set TRUSTED_PROXY_CIDRS so rate limiting sees real client IPs.&#13;&#10;&#13;&#10;Image tags mirror Plezy app releases: tag 2.19.1 is the relay as shipped with Plezy 2.19.1. Upstream advises deploying the updated relay BEFORE updating your clients. Use the Repository dropdown to pin a specific version.&#13;&#10;&#13;&#10;UNOFFICIAL: this is a community build of the server/ directory of github.com/edde746/plezy. Not affiliated with or endorsed by the Plezy project.</Overview>
   <Category>Network Services: Media Applications:Video</Category>
