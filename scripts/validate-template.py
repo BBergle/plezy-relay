@@ -15,7 +15,7 @@ TEMPLATE = "templates/plezy-relay.xml"
 PROFILE = "ca_profile.xml"
 ICON = "templates/plezy-relay-icon.png"
 RAW = "https://raw.githubusercontent.com"
-REQUIRED_FIELDS = ("Name", "Repository", "Overview", "Category", "Support", "Project", "Icon")
+REQUIRED_FIELDS = ("Name", "Repository", "Overview", "Category", "Project", "Icon")
 
 
 def main() -> int:
