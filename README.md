@@ -76,9 +76,9 @@ Upstream's advice is to **deploy the updated relay before updating your clients*
 Pinning to the version your clients run is the safe play; `latest` is fine if you
 update the relay first.
 
-Images exist for Plezy **1.24.0 and later only** — that is the release where
-`server/Dockerfile` first appeared upstream. There is no backfill: this repository
-started at 2.19.1 and publishes each release from then on.
+Images start at Plezy **2.19.1**. Earlier releases were not built, so if you need
+to pair a relay with an older client you will have to build it yourself from that
+tag of the Plezy repository.
 
 ## Configuration
 
@@ -109,52 +109,34 @@ The relay speaks **plain HTTP/WebSocket and has no TLS**. Do not port-forward it
 directly. Put a reverse proxy in front, terminate TLS there, use `wss://`, and set
 `TRUSTED_PROXY_CIDRS` to your proxy's network so rate limiting sees real client IPs.
 
-## How it stays current
+## Staying up to date
 
-A scheduled workflow checks for new Plezy releases daily.
+New Plezy releases are picked up automatically, so a new image is normally
+available within a day of a release. You do not need to watch this repository.
 
-Most Plezy releases do not touch `server/` at all — across the 54 tags that contain
-it, there are only 13 distinct versions of that directory. So the workflow compares
-the release's `server/` git tree against what has already been built; when it is
-unchanged, the new version tags are added to the **existing manifest** rather than
-rebuilding. Same digest, and it finishes in seconds.
+If you want your container to follow along on its own, install the **CA Auto
+Update Applications** plugin on Unraid, enable it for `plezy-relay`, and stay on
+the `latest` tag. Otherwise update it whenever you update your Plezy clients —
+relay first.
 
-When `server/` genuinely changed, the image is rebuilt, and before any tag is
-published the build is smoke-tested: the container must come up, answer `/health`,
-and complete a real relay handshake advertising `authenticatedResume`
-([`scripts/ws_probe.py`](scripts/ws_probe.py)). A broken upstream commit does not
-become your `latest`.
+A few things worth knowing about what you are pulling:
 
-Nothing in this repository is a copy of Plezy. Workflows check out upstream at the
-target tag and build its unmodified Dockerfile, so there is nothing here to fall
-out of date.
+- **It is upstream's build, not a fork.** Every image is produced from Plezy's own
+  unmodified `server/Dockerfile` at that release tag. No Plezy source is copied,
+  patched, or vendored here.
+- **Broken builds do not reach you.** Before any tag is published, the image has
+  to start, answer `/health`, and complete a real relay handshake. A bad upstream
+  commit fails the build rather than becoming your `latest`.
+- **Pinned tags never move.** When a Plezy release does not change the relay at
+  all, the new version tag is pointed at the existing image instead of rebuilding,
+  so the digest you pinned stays exactly the same.
 
-To publish a release by hand, run the **Watch for Plezy releases** workflow with a
-`release` input (and `force_rebuild` if you need to redo one).
+To check which upstream commit an image came from:
 
-The template is also mirrored to
-[BBergle/unraid-templates](https://github.com/BBergle/unraid-templates/tree/main/plezy-relay).
-That copy only refreshes automatically if a `TEMPLATES_REPO_TOKEN` repository
-secret exists with write access to that repo — a cross-repo push cannot use the
-workflow's built-in token. Without it the mirror step skips, and the copy can be
-refreshed at any time with `GH_TOKEN=... scripts/mirror-template.sh`.
-
-## Repository layout
-
+```bash
+docker inspect ghcr.io/bbergle/plezy-relay:latest \
+  --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}'
 ```
-.github/workflows/build.yml           reusable: build + smoke test + push one ref
-.github/workflows/release-watch.yml   daily: detect, build or re-tag, record
-.github/workflows/template-lint.yml   XML, icon, and shell checks
-scripts/plan-release.sh               decides none / build / re-tag
-scripts/render-template.sh            regenerates the template version dropdown
-scripts/mirror-template.sh            copies the template to BBergle/unraid-templates
-scripts/ws_probe.py                   relay protocol smoke test
-state/builds.json                     what has been published, and tree -> tag map
-templates/plezy-relay.xml             the Unraid template
-```
-
-`state/builds.json` is the source of truth for what has shipped. Deleting an entry
-and re-running the workflow republishes that release.
 
 ## Licence
 
