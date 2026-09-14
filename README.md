@@ -55,7 +55,7 @@ http://YOUR-SERVER-IP:9977
 The URL must be `http://` or `https://`. Behind a reverse proxy, use the proxy's
 address instead, such as `https://relay.example.com`.
 
-Everyone in a session must be on the same relay.
+To watch together, everyone must be using the same relay.
 
 ## Tags
 
