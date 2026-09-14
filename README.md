@@ -46,27 +46,16 @@ specific Plezy version; see [Tags](#tags) for which to choose.
 
 ## Connecting Plezy
 
-On each device: **Settings → Watch Together Relay**, and enter the relay's **base
-URL**. On your LAN that is:
+On each device: **Settings → Watch Together Relay**. On your LAN, enter:
 
 ```
 http://YOUR-SERVER-IP:9977
 ```
 
+The URL must be `http://` or `https://`. Behind a reverse proxy, use the proxy's
+address instead, such as `https://relay.example.com`.
+
 Everyone in a session must be on the same relay.
-
-Three things the field is picky about:
-
-- **Base URL only.** Do not add `/relay` or any other path — Plezy appends the
-  routes itself.
-- **`http://` or `https://`, never `ws://`.** The app derives the WebSocket
-  scheme for you and rejects a `ws://` address outright with *"Enter a valid HTTP
-  or HTTPS relay base URL"*.
-- **A path prefix is allowed**, so a reverse proxy can serve it from a subpath
-  like `https://example.com/plezy-relay`.
-
-Behind a reverse proxy, give clients the proxy's address —
-`https://relay.example.com` — not the container's port.
 
 ## Tags
 
