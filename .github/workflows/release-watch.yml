@@ -102,7 +102,7 @@ jobs:
              state/builds.json > state/builds.json.tmp
           mv state/builds.json.tmp state/builds.json
           scripts/render-template.sh
-          xmllint --noout unraid/plezy-relay.xml
+          scripts/validate-template.py '${{ github.repository }}'
 
       - name: Commit
         run: |

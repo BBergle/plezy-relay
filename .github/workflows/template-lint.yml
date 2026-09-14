@@ -14,29 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate template XML
-        run: |
-          set -euo pipefail
-          xmllint --noout unraid/plezy-relay.xml
-          xmllint --noout ca_profile.xml
-          # Catch the mistakes that make a template silently unusable rather
-          # than invalid: wrong self-URL, or an icon/port that moved.
-          grep -q '<TemplateURL>https://raw.githubusercontent.com/${{ github.repository }}/main/unraid/plezy-relay.xml</TemplateURL>' \
-            unraid/plezy-relay.xml \
-            || { echo "::error::TemplateURL does not match this repository"; exit 1; }
-          grep -q 'ghcr.io/'"$(echo '${{ github.repository_owner }}' | tr 'A-Z' 'a-z')"'/plezy-relay' \
-            unraid/plezy-relay.xml \
-            || { echo "::error::Repository field does not point at this owner's GHCR image"; exit 1; }
-      - name: Verify icon is a reasonable PNG
-        run: |
-          python3 - <<'PY'
-          import struct, sys
-          data = open("unraid/plezy.png", "rb").read()
-          assert data[:8] == b"\x89PNG\r\n\x1a\n", "icon is not a PNG"
-          w, h = struct.unpack(">II", data[16:24])
-          assert w == h, f"icon should be square, got {w}x{h}"
-          assert 64 <= w <= 512, f"icon should be 64-512px, got {w}px"
-          print(f"icon ok: {w}x{h}, {len(data)} bytes")
-          PY
+      - name: Validate template and icon
+        run: scripts/validate-template.py '${{ github.repository }}'
       - name: Shell scripts
         run: shellcheck scripts/*.sh
