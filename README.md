@@ -27,7 +27,7 @@ docker run -d --name plezy-relay \
   ghcr.io/bbergle/plezy-relay:latest
 ```
 
-Then in Plezy, set the Watch Together relay to `ws://YOUR-SERVER-IP:9977/relay`.
+Then point Plezy at it — see [Connecting Plezy](#connecting-plezy) below.
 
 There is **no web interface** — this is a WebSocket service. To check it is alive:
 
@@ -39,12 +39,34 @@ curl http://YOUR-SERVER-IP:9977/health   # -> ok
 
 Go to **Apps**, search for **plezy-relay**, and click *Install*.
 
-The defaults are ready to use — host port `9977` and an appdata path for `/data`. The
-only thing left is to point your Plezy clients at
-`ws://YOUR-UNRAID-IP:9977/relay`.
+The defaults are ready to use — host port `9977` and an appdata path for `/data`.
 
 The **Repository** dropdown on the template lets you stay on `latest` or pin a
 specific Plezy version; see [Tags](#tags) for which to choose.
+
+## Connecting Plezy
+
+On each device: **Settings → Watch Together Relay**, and enter the relay's **base
+URL**. On your LAN that is:
+
+```
+http://YOUR-SERVER-IP:9977
+```
+
+Everyone in a session must be on the same relay.
+
+Three things the field is picky about:
+
+- **Base URL only.** Do not add `/relay` or any other path — Plezy appends the
+  routes itself.
+- **`http://` or `https://`, never `ws://`.** The app derives the WebSocket
+  scheme for you and rejects a `ws://` address outright with *"Enter a valid HTTP
+  or HTTPS relay base URL"*.
+- **A path prefix is allowed**, so a reverse proxy can serve it from a subpath
+  like `https://example.com/plezy-relay`.
+
+Behind a reverse proxy, give clients the proxy's address —
+`https://relay.example.com` — not the container's port.
 
 ## Tags
 
@@ -93,9 +115,13 @@ Mapping it is what lets an in-progress Watch Together session survive a restart.
 
 ### Exposing it to the internet
 
-The relay speaks **plain HTTP/WebSocket and has no TLS**. Do not port-forward it
-directly. Put a reverse proxy in front, terminate TLS there, use `wss://`, and set
-`TRUSTED_PROXY_CIDRS` to your proxy's network so rate limiting sees real client IPs.
+The relay speaks **plain HTTP and has no TLS of its own**. Do not port-forward it
+directly. Put a reverse proxy in front and terminate TLS there, then give clients
+the proxy's `https://` address. Set `TRUSTED_PROXY_CIDRS` to your proxy's network
+so rate limiting sees real client IPs.
+
+The proxy must pass WebSocket upgrades through to `/relay`, and it may serve the
+relay from a subpath if you prefer.
 
 ## Staying up to date
 
