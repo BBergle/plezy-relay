@@ -1,2 +1,12 @@
 *.tmp
 .DS_Store
+
+# Claude Code — local agent config, session state, and notes. Never publish:
+# settings.local.json and memory files can contain paths, tokens, and personal
+# details, and this repository is public.
+.claude/
+.claude*/
+CLAUDE.md
+CLAUDE.local.md
+memory/
+.mcp.json
