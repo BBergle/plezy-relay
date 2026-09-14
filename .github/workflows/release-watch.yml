@@ -19,9 +19,6 @@ concurrency:
   group: release-watch
   cancel-in-progress: false
 
-env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/plezy-relay
-
 permissions:
   contents: read
 
@@ -30,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       action: ${{ steps.plan.outputs.action }}
+      image: ${{ steps.plan.outputs.image }}
       release: ${{ steps.plan.outputs.release }}
       sha: ${{ steps.plan.outputs.sha }}
       tree: ${{ steps.plan.outputs.tree }}
@@ -41,7 +39,6 @@ jobs:
         run: scripts/plan-release.sh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # ghcr.io requires a lowercase path; repository_owner preserves case.
           IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/plezy-relay
           FORCE_RELEASE: ${{ inputs.release }}
           FORCE_REBUILD: ${{ inputs.force_rebuild }}
@@ -81,7 +78,7 @@ jobs:
             [ -n "$tag" ] && args+=(--tag "$tag")
           done <<< "${{ needs.plan.outputs.tags }}"
           docker buildx imagetools create "${args[@]}" \
-            "${IMAGE_NAME}:${{ needs.plan.outputs.source }}"
+            "${{ needs.plan.outputs.image }}:${{ needs.plan.outputs.source }}"
 
   record:
     needs: [plan, build, retag]

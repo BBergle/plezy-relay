@@ -15,7 +15,9 @@
 set -euo pipefail
 
 UPSTREAM="${UPSTREAM_REPO:-edde746/plezy}"
-IMAGE="${IMAGE_NAME:?IMAGE_NAME must be set}"
+# GHCR rejects any uppercase in a repository path, and GitHub owner names keep
+# their original case, so normalise here rather than at each call site.
+IMAGE=$(printf '%s' "${IMAGE_NAME:?IMAGE_NAME must be set}" | tr '[:upper:]' '[:lower:]')
 STATE="${STATE_FILE:-state/builds.json}"
 # server/Dockerfile first appears upstream in 1.24.0; older tags cannot be built.
 MIN_RELEASE="${MIN_RELEASE:-1.24.0}"
@@ -65,6 +67,7 @@ else
   echo "note: ${release} is older than ${newest_processed}; not moving latest/${major}/${minor}"
 fi
 
+out image "$IMAGE"
 out release "$release"
 out sha "$sha"
 out tree "$tree"
