@@ -21,27 +21,27 @@ ghcr.io/bbergle/plezy-relay:latest
 
 ```bash
 docker run -d --name plezy-relay \
-  -p 8080:8080 \
+  -p 9977:8080 \
   -v /mnt/user/appdata/plezy-relay:/data \
   --restart unless-stopped \
   ghcr.io/bbergle/plezy-relay:latest
 ```
 
-Then in Plezy, set the Watch Together relay to `ws://YOUR-SERVER-IP:8080/relay`.
+Then in Plezy, set the Watch Together relay to `ws://YOUR-SERVER-IP:9977/relay`.
 
 There is **no web interface** — this is a WebSocket service. To check it is alive:
 
 ```bash
-curl http://YOUR-SERVER-IP:8080/health   # -> ok
+curl http://YOUR-SERVER-IP:9977/health   # -> ok
 ```
 
 ## Unraid
 
 Go to **Apps**, search for **plezy-relay**, and click *Install*.
 
-The defaults are ready to use — port `8080` and an appdata path for `/data`. The
+The defaults are ready to use — host port `9977` and an appdata path for `/data`. The
 only thing left is to point your Plezy clients at
-`ws://YOUR-UNRAID-IP:8080/relay`.
+`ws://YOUR-UNRAID-IP:9977/relay`.
 
 The **Repository** dropdown on the template lets you stay on `latest` or pin a
 specific Plezy version; see [Tags](#tags) for which to choose.
