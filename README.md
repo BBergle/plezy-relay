@@ -37,14 +37,14 @@ curl http://YOUR-SERVER-IP:8080/health   # -> ok
 
 ## Unraid
 
-The template is [`unraid/plezy-relay.xml`](unraid/plezy-relay.xml). It is not in
+The template is [`templates/plezy-relay.xml`](templates/plezy-relay.xml). It is not in
 Community Applications yet, so install it by copying it onto the flash drive.
 
 On the Unraid box — *Terminal* in the web UI, or SSH — run:
 
 ```bash
 curl -L -o /boot/config/plugins/dockerMan/templates-user/my-plezy-relay.xml \
-  https://raw.githubusercontent.com/BBergle/plezy-relay/main/unraid/plezy-relay.xml
+  https://raw.githubusercontent.com/BBergle/plezy-relay/main/templates/plezy-relay.xml
 ```
 
 Then Docker → *Add Container* → open the **Template** dropdown and pick
@@ -57,6 +57,18 @@ Then Docker → *Add Container* → open the **Template** dropdown and pick
 
 Once installed, the template's **Repository** dropdown lets you pick `latest` or
 pin a specific Plezy version.
+
+## Community Applications
+
+Not listed yet. The repository is already shaped for submission: public, GPL-3.0,
+one template per app under `templates/`, a populated `ca_profile.xml`, and a
+`TemplateURL` that matches where CA will re-fetch the file from. CI enforces all
+of that on every push, so it cannot drift out of compliance silently.
+
+To submit: sign in at [ca.unraid.net/submit/new](https://ca.unraid.net/submit/new)
+with your Unraid account, add this repository's GitHub URL, run **Validate** and
+**Scan**, then confirm. CA re-fetches templates from `TemplateURL` on its own
+schedule afterwards, so published updates propagate without resubmitting.
 
 ## Tags
 
@@ -150,7 +162,7 @@ scripts/render-template.sh            regenerates the template version dropdown
 scripts/mirror-template.sh            copies the template to BBergle/unraid-templates
 scripts/ws_probe.py                   relay protocol smoke test
 state/builds.json                     what has been published, and tree -> tag map
-unraid/plezy-relay.xml                the Unraid template
+templates/plezy-relay.xml             the Unraid template
 ```
 
 `state/builds.json` is the source of truth for what has shipped. Deleting an entry

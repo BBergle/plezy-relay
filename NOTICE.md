@@ -35,6 +35,6 @@ offered under the GPL-3.0 for consistency.
 
 ## Icon
 
-`unraid/plezy.png` is Plezy's application icon, taken from `assets/plezy.png`
+`templates/plezy-relay-icon.png` is Plezy's application icon, taken from `assets/plezy.png`
 upstream and downscaled to 256×256 for Unraid. It is used to identify the
 application, and remains the property of the Plezy project.

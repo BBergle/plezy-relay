@@ -20,8 +20,8 @@
   <Overview>Self-hosted relay server for Plezy's "Watch Together" feature.&#13;&#10;&#13;&#10;Plezy is a cross-platform Plex &amp; Jellyfin client. Watch Together syncs playback between viewers through a small relay server, and this container runs your own instead of using the public one.&#13;&#10;&#13;&#10;This container has NO web interface. It is a WebSocket service. After starting it, open Plezy on your devices and point the Watch Together relay setting at:&#13;&#10;    ws://YOUR-UNRAID-IP:8080/relay&#13;&#10;&#13;&#10;To use it from outside your LAN, put a reverse proxy with TLS in front of it (the relay speaks plain HTTP/WS only and has no built-in TLS) and use wss:// instead. If you do that, set TRUSTED_PROXY_CIDRS so rate limiting sees real client IPs.&#13;&#10;&#13;&#10;Image tags mirror Plezy app releases: tag 2.19.1 is the relay as shipped with Plezy 2.19.1. Upstream advises deploying the updated relay BEFORE updating your clients. Use the Repository dropdown to pin a specific version.&#13;&#10;&#13;&#10;UNOFFICIAL: this is a community build of the server/ directory of github.com/edde746/plezy. Not affiliated with or endorsed by the Plezy project. Please report container issues to this template's support link, not to upstream.</Overview>
   <Category>Network Services: Media Applications:Video</Category>
   <WebUI/>
-  <TemplateURL>https://raw.githubusercontent.com/BBergle/plezy-relay/main/unraid/plezy-relay.xml</TemplateURL>
-  <Icon>https://raw.githubusercontent.com/BBergle/plezy-relay/main/unraid/plezy.png</Icon>
+  <TemplateURL>https://raw.githubusercontent.com/BBergle/plezy-relay/main/templates/plezy-relay.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/BBergle/plezy-relay/main/templates/plezy-relay-icon.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <CPUset/>

@@ -1,7 +1,22 @@
-<?xml version="1.0"?>
-<Profile>
-  <Repository>https://github.com/BBergle/plezy-relay</Repository>
-  <Name>BBergle</Name>
-  <Profile>https://github.com/BBergle</Profile>
-  <Support>https://github.com/BBergle/plezy-relay/issues</Support>
-</Profile>
+<CommunityApplications>
+  <Profile>
+    Docker images for the **Plezy Watch Together relay server**.
+
+    [Plezy](https://github.com/edde746/plezy) is a cross-platform Plex, Jellyfin
+    and Emby client. Its Watch Together feature syncs playback between viewers
+    through a relay server, and upstream supports pointing clients at your own
+    instead of the public one. The relay source ships in the Plezy repository but
+    upstream publishes no image, so self-hosting it otherwise means building it
+    by hand.
+
+    This repository rebuilds upstream's own unmodified Dockerfile on every Plezy
+    release and publishes multi-arch images to GHCR, so the Unraid template always
+    has a current build to pull. Images are tagged to match the Plezy release they
+    came from, so a relay can be pinned to the client version in use.
+
+    Unofficial: not affiliated with or endorsed by the Plezy project. Container
+    and template issues go to this repository's issue tracker.
+  </Profile>
+  <Icon>https://raw.githubusercontent.com/BBergle/plezy-relay/main/templates/plezy-relay-icon.png</Icon>
+  <WebPage>https://github.com/BBergle/plezy-relay</WebPage>
+</CommunityApplications>

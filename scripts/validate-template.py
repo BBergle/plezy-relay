@@ -11,9 +11,9 @@ import struct
 import sys
 import xml.etree.ElementTree as ET
 
-TEMPLATE = "unraid/plezy-relay.xml"
+TEMPLATE = "templates/plezy-relay.xml"
 PROFILE = "ca_profile.xml"
-ICON = "unraid/plezy.png"
+ICON = "templates/plezy-relay-icon.png"
 RAW = "https://raw.githubusercontent.com"
 REQUIRED_FIELDS = ("Name", "Repository", "Overview", "Category", "Support", "Project", "Icon")
 
@@ -26,9 +26,16 @@ def main() -> int:
 
     try:
         root = ET.parse(TEMPLATE).getroot()
-        ET.parse(PROFILE)
+        profile = ET.parse(PROFILE).getroot()
     except ET.ParseError as exc:
         return fail(f"XML is not well-formed: {exc}")
+
+    # Community Applications rejects a repo whose profile is missing or empty.
+    if profile.tag != "CommunityApplications":
+        return fail(f"{PROFILE} root must be <CommunityApplications>, got <{profile.tag}>")
+    blurb = profile.find("Profile")
+    if blurb is None or len((blurb.text or "").strip()) < 40:
+        return fail(f"{PROFILE} needs a non-trivial <Profile> description")
 
     if root.tag != "Container":
         return fail(f"root element must be <Container>, got <{root.tag}>")

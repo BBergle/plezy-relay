@@ -4,7 +4,7 @@
 set -euo pipefail
 
 STATE="${STATE_FILE:-state/builds.json}"
-TEMPLATE="${TEMPLATE_FILE:-unraid/plezy-relay.xml}"
+TEMPLATE="${TEMPLATE_FILE:-templates/plezy-relay.xml}"
 MAX_PINNED="${MAX_PINNED:-10}"
 
 # Descending semver: 2.10.0 must sort above 2.9.0, so sort numerically per field.

@@ -6,8 +6,8 @@ set -euo pipefail
 TARGET_REPO="${TARGET_REPO:-BBergle/unraid-templates}"
 TARGET_PATH="${TARGET_PATH:-plezy-relay/plezy-relay.xml}"
 TARGET_ICON="${TARGET_ICON:-plezy-relay/plezy.png}"
-TEMPLATE="${TEMPLATE_FILE:-unraid/plezy-relay.xml}"
-ICON="${ICON_FILE:-unraid/plezy.png}"
+TEMPLATE="${TEMPLATE_FILE:-templates/plezy-relay.xml}"
+ICON="${ICON_FILE:-templates/plezy-relay-icon.png}"
 RELEASE="${RELEASE:-}"
 
 put() { # path local-file message
@@ -29,8 +29,8 @@ put() { # path local-file message
 # The mirrored copy must advertise its own location, or Unraid/CA would re-fetch
 # the canonical repo's file and the two would silently diverge.
 mirrored=$(mktemp)
-sed "s|https://raw.githubusercontent.com/BBergle/plezy-relay/main/unraid/plezy-relay.xml|https://raw.githubusercontent.com/${TARGET_REPO}/main/${TARGET_PATH}|; \
-      s|https://raw.githubusercontent.com/BBergle/plezy-relay/main/unraid/plezy.png|https://raw.githubusercontent.com/${TARGET_REPO}/main/${TARGET_ICON}|" \
+sed "s|https://raw.githubusercontent.com/BBergle/plezy-relay/main/templates/plezy-relay.xml|https://raw.githubusercontent.com/${TARGET_REPO}/main/${TARGET_PATH}|; \
+      s|https://raw.githubusercontent.com/BBergle/plezy-relay/main/templates/plezy-relay-icon.png|https://raw.githubusercontent.com/${TARGET_REPO}/main/${TARGET_ICON}|" \
   "$TEMPLATE" > "$mirrored"
 
 put "$TARGET_PATH" "$mirrored" "plezy-relay: sync template${RELEASE:+ for }${RELEASE}"
