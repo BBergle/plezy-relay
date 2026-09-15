@@ -9,6 +9,10 @@
     <TagDescription>Newest Plezy release</TagDescription>
   </Branch>
   <Branch>
+    <Tag>2.20.0</Tag>
+    <TagDescription>Relay as shipped with Plezy 2.20.0</TagDescription>
+  </Branch>
+  <Branch>
     <Tag>2.19.1</Tag>
     <TagDescription>Relay as shipped with Plezy 2.19.1</TagDescription>
   </Branch>
