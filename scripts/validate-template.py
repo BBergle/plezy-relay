@@ -65,9 +65,11 @@ def main() -> int:
     if webui is not None and (webui.text or "").strip():
         problems.append("<WebUI> must be empty - the relay has no web interface")
 
+    # Deliberately a single branch: version tags come and go, and a stale
+    # dropdown is worse than none. Pinning is done by editing <Repository>.
     tags = [t.text for t in root.findall("./Branch/Tag")]
-    if "latest" not in tags:
-        problems.append(f"<Branch> list must offer 'latest', got {tags}")
+    if tags != ["latest"]:
+        problems.append(f"<Branch> must be exactly ['latest'], got {tags}")
 
     configs = {c.get("Target"): c for c in root.findall("Config")}
     if "8080" not in configs:

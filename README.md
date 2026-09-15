@@ -41,8 +41,9 @@ Go to **Apps**, search for **plezy-relay**, and click *Install*.
 
 The defaults are ready to use — host port `9977` and an appdata path for `/data`.
 
-The **Repository** dropdown on the template lets you stay on `latest` or pin a
-specific Plezy version; see [Tags](#tags) for which to choose.
+The template tracks `latest`. To pin a specific Plezy version, edit the
+**Repository** field and replace `:latest` with the tag you want, such as
+`ghcr.io/bbergle/plezy-relay:2.19.1` — see [Tags](#tags) for the options.
 
 ## Connecting Plezy
 

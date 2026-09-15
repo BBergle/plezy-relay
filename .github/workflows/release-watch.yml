@@ -121,7 +121,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Record the published release and refresh the template
+      - name: Record the published release
         run: |
           set -euo pipefail
           jq --arg r '${{ needs.plan.outputs.release }}' \
@@ -130,7 +130,8 @@ jobs:
               | .trees[$t] = (.trees[$t] // $r)' \
              state/builds.json > state/builds.json.tmp
           mv state/builds.json.tmp state/builds.json
-          scripts/render-template.sh
+          # The template is static (it only ever offers `latest`), but it is
+          # mirrored below, so re-check it before anything leaves this repo.
           scripts/validate-template.py '${{ github.repository }}'
 
       - name: Commit
@@ -139,7 +140,7 @@ jobs:
           if git diff --quiet; then echo "nothing to commit"; exit 0; fi
           git config user.name  'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add state/builds.json templates/plezy-relay.xml
+          git add state/builds.json
           git commit -m 'Publish relay ${{ needs.plan.outputs.release }}'
           git push
 
