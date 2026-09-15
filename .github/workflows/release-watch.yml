@@ -58,9 +58,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - name: Refresh activity if the repo has gone quiet
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           age=$(( ( $(date +%s) - $(git log -1 --format=%ct) ) / 86400 ))
@@ -68,12 +71,11 @@ jobs:
           if [ "$age" -lt 45 ]; then
             echo "recent activity - no heartbeat needed"; exit 0
           fi
-          git config user.name  'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           date -u +%Y-%m-%dT%H:%M:%SZ > state/last-heartbeat
-          git add state/last-heartbeat
-          git commit -m 'Keep scheduled builds enabled'
-          git push
+          scripts/commit-via-pr.sh \
+            keepalive/heartbeat \
+            'Keep scheduled builds enabled' \
+            state/last-heartbeat
 
   build:
     needs: plan
@@ -118,6 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
 
@@ -134,15 +137,14 @@ jobs:
           # mirrored below, so re-check it before anything leaves this repo.
           scripts/validate-template.py '${{ github.repository }}'
 
-      - name: Commit
+      - name: Land the state update on main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
-          if git diff --quiet; then echo "nothing to commit"; exit 0; fi
-          git config user.name  'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add state/builds.json
-          git commit -m 'Publish relay ${{ needs.plan.outputs.release }}'
-          git push
+          scripts/commit-via-pr.sh \
+            'publish/${{ needs.plan.outputs.release }}' \
+            'Publish relay ${{ needs.plan.outputs.release }}' \
+            state/builds.json
 
       - name: Mirror template to unraid-templates
         # Cross-repo push needs a PAT. The `secrets` context is not allowed in a
