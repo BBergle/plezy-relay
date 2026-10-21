@@ -1,5 +1,13 @@
 # plezy-relay
 
+> **Retired.** Since Plezy 2.24, Watch Together runs on
+> [Open Watch Party](https://openwatch.party) and needs an Open Watch Party relay.
+> The relay these images contain no longer works with current Plezy clients.
+> Use the public relays, or self-host the official image
+> `ghcr.io/edde746/owp-relay` — see its
+> [self-hosting guide](https://github.com/edde746/openwatchparty/blob/main/relay/README.md#self-hosting).
+> Existing images stay available for Plezy 2.23 and older.
+
 Up-to-date Docker images for the **Plezy Watch Together relay server**, plus an
 Unraid template.
 
